@@ -1,4 +1,11 @@
 Website::Application.routes.draw do
+  resources :users, :user_sessions, :authorizations   
+  match 'login' => 'user_sessions#create', :as => :login
+  match 'logout' => 'user_sessions#destroy', :as => :logout
+  match 'signup' => 'users#create', :as => :userscreate
+  # map.callback "/auth/:provider/callback", :controller => "authorizations", :action => "create"
+  match "/auth/:provider/callback" => 'authorizations#create'
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
