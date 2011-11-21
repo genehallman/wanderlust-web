@@ -9,7 +9,6 @@ gem 'heroku'
 gem 'therubyracer' 
 gem 'authlogic'
 gem 'omniauth-facebook'
-gem 'ruby-debug19'
 #gem 'pg'
 
 # Gems used only for assets and not required
@@ -36,7 +35,8 @@ group :production do
 end    
 
 group :development do
-  #gem 'sqlite3'  
+  gem 'sqlite3'  
+  gem 'ruby-debug19'
 end
 
 group :test do
