@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-has_many :authentications, :dependent => :destroy
+  has_many :authentications, :dependent => :destroy
   acts_as_authentic
   
   def self.create_from_hash(hash)

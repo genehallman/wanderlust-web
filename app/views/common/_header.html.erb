@@ -1,0 +1,14 @@
+<h1>
+	<%=link_to "Wanderlust", root_url %>
+
+	<div id="status" style="float:right;font-size:14px;font-weight:normal;">
+		<% if current_user %>
+			<span id="user_email"><%=current_user.email%></span> |
+			<span><%=link_to "Logout", user_session_path, :method => :delete %></span>
+		<% else %>
+			<span><%=link_to "Sign up", new_user_path %></span> |
+			<span><%=link_to "Login", new_user_session_path %></span>
+		<% end %>
+	</div>
+</h1>
+<div style="clear:both;">

@@ -1,24 +1,32 @@
-<%= form_for(@user) do |f| %>
+<%= form_for @user, :url => (@user.id ? account_path : users_path) do |f| %>
   <% if @user.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
 
       <ul>
-      <% @user.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
+	      <% @user.errors.full_messages.each do |msg| %>
+	        <li><%= msg %></li>
+	      <% end %>
       </ul>
     </div>
   <% end %>
 
   <div class="field">
-    <%= f.label :username %><br />
-    <%= f.text_field :username %>
-  </div>
-  <div class="field">
     <%= f.label :email %><br />
     <%= f.text_field :email %>
   </div>
+
+	<% unless @user.id %>
+	  <div class="field">
+	    <%= f.label :password %><br />
+	    <%= f.password_field :password %>
+	  </div>
+	  <div class="field">
+	    <%= f.label :password_confirmation %><br />
+	    <%= f.password_field :password_confirmation %>
+	  </div>
+	<% end %>
+
   <div class="field">
     <%= f.label :gender %><br />
     <%= f.text_field :gender %>
@@ -32,9 +40,9 @@
     <%= f.text_field :location %>
   </div>
   <div class="field">
-    <%= f.label :age %><br />
-    <%= f.number_field :age %>
-  </div>
+    <%= f.label :date_of_birth %><br />
+		<%= f.date_select :date_of_birth, :start_year => Time.now.year - 100, :end_year => Time.now.year, :order => [:day, :month, :year], :include_blank => true %>
+	</div>
   <div class="field">
     <%= f.label :nationality %><br />
     <%= f.text_field :nationality %>

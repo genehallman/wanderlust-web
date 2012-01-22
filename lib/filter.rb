@@ -2,13 +2,8 @@
 module Filter
 
   def filter
-    @sorted_results={}
-    User.all.each do |u|
-      to_add = {u.id.to_s => calculate_score(u) }
-      @sorted_results = @sorted_results.merge(to_add)  
-    end
-    puts @sorted_results
-    @sorted_results = @sorted_results.sort_by{ |k,v| -v}
+    @sorted_results = Hash[*User.all.map.collect { |u| [u.id, calculate_score(u)] }.flatten]
+    puts @sorted_results.class
     puts "======================================================== RESULTS ================================================================="
     puts @sorted_results
   end    
@@ -18,7 +13,7 @@ module Filter
   def calculate_score(user) 
     score=0;
     score += location_score( (current_user.location.to_f - user.location.to_f).abs )
-    score += age_score((current_user.age.to_f - user.age.to_f).abs)
+    score += age_score((current_user.date_of_birth.year - user.date_of_birth.year).abs)
     score += language_score( current_user.language, user.language)
     score += nationality_score( current_user.nationality, user.nationality)
     score

@@ -1,7 +1,17 @@
 class UsersController < ApplicationController
+  before_filter :require_no_user, :only => [:new, :create]
+  before_filter :require_user, :only => [:index, :show, :edit, :update, :destroy]
+
+  def index
+    @users = User.all
+    respond_to do |format|
+      format.html
+      format.json { render :json => @users.to_json(:only => [:id, :email]) }
+    end
+  end
 
   def show
-    @user = User.find(params[:id])
+    @user = current_user
 
     respond_to do |format|
       format.html # show.html.erb
@@ -19,7 +29,7 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = resolve_user_creation_params(params)
+    @user = User.new(params[:user])
     respond_to do |format|
       if @user.save
         @user_session = UserSession.create(:username=>params[:username], :password=>params[:password])
@@ -31,12 +41,16 @@ class UsersController < ApplicationController
     end
   end
 
+  def edit
+    @user = current_user
+  end
+
   def update
-    @user = User.find(params[:id])
+    @user = current_user
 
     respond_to do |format|
       if @user.update_attributes(params[:user])
-        format.html { redirect_to @user, notice: 'User was successfully updated.' }
+        format.html { redirect_to account_path, notice: 'User was successfully updated.' }
         format.json { head :ok }
       else
         format.html { render action: "edit" }
@@ -46,7 +60,7 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    @user = User.find(params[:id])
+    @user = current_user
     @user.destroy
 
     respond_to do |format|

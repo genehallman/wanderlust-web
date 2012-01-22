@@ -1,0 +1,75 @@
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<canvas id="myCanvas"></canvas>
+
+		<script>
+			var strips = 20;
+			var strip_width = 32;
+			
+			var canvas = document.getElementById("myCanvas");
+			canvas.width = 640;
+			canvas.height = 359;
+	    var context = canvas.getContext("2d");
+			
+			window.onload = function() {
+				var image = new Image();
+				image.onload = function() {
+					doWork(image);
+				}
+				
+				image.src = "image.png";
+			}
+
+			function doWork(image) {		    
+				context.drawImage(image, 0, 0);
+				var pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+				
+				var left_distances = [];
+				var right_distances = [];
+				
+				for (var i = 0; i < strips; i++) {
+					left_distances[i] = [];
+					right_distances[i] = [];
+					for (var j = 0; j < strips; j++) {
+
+						if (i == j) {
+							left_distances[i][j] = -1;
+							right_distances[i][j] = -1;
+						}
+						else {
+							var total = 0
+							srcPixelStrip = getPixelStrip(pixels, i * strip_width);
+							destPixelStrip = getPixelStrip(pixels, ((j+1) * strip_width)-1);
+						
+							//for each pixel
+							for (var k = 0; k < canvas.height; k++) {
+								total = total + distance(srcPixelStrip[k], destPixelStrip[k]);
+							}
+							left_distances[i][j] = total;
+						}
+					}
+				}				
+				console.log(left_distances);
+			}
+			
+			function distance(left, right) {
+				return Math.sqrt(Math.pow(left.r - right.r, 2) + Math.pow(left.b - right.b, 2) + Math.pow(left.g - right.b, 2));
+			}
+			
+			function getPixelStrip(pixels, xOffset) {
+				var output = [];
+				for (var i = 0; i < canvas.height; i++) {
+					var red = pixels[((i * canvas.width) + xOffset) * 4];
+					var blue = pixels[((i * canvas.width) + xOffset) * 4 + 1];
+					var green = pixels[((i * canvas.width) + xOffset) * 4 + 2];
+					output[i] = {r: red, b: blue, g: green};
+				}
+				return output;
+			}
+		
+		</script>
+	</body>
+</html>
